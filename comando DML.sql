@@ -116,3 +116,63 @@ from users
 left join orders on users.id = orders.user_id
 GROUP BY users.id, users.name
 ORDER BY valor_total_comprado DESC;
+
+
+
+
+
+
+
+--1 Resumo dos pedidos por usuários (id)
+
+
+-- Relatorios de vendas de produtos(id, produto, qtd_vedida, total_vendido)
+drop view exists v_products_sales;
+create view v_products_sales as
+select
+    p.id id,
+    p.name produto,
+    sum(op.quantity) qtd_vendida,
+    sum(op.quantity * op.unit_price) total_vendido
+from products
+join orders_products op on op.products_id = p.id
+join orders o on o.id = op.order_id
+where o.status <> 'canceled'
+group by p.id, p.name; 
+
+-- 3 Relatório detalhado
+drop view if exists v_orders_details as
+select
+    o.id id,
+    u.name usuario,
+    u.email email,
+    o.order_date,
+    o.satus,
+    p.name produto,
+    op.quantity qtd,
+    op.unit_price valor_unitario,
+    op.unit_price * op.quantity valor_total
+from orders 
+join user u on u.id = o.user_id
+join orders_products op on op.order_id = o.id
+join products p on p.id = op.product_id;
+
+-- select * from  v_order_details order by id;
+
+-- 4 relatório de itens em estoque
+drop view if exists v_products_in_stock;
+create view v_products_in_stock as
+select
+    id,
+    name produto,
+    price valor,
+    stock estoque
+from products
+where stock > 0;
+
+-- select * from v_products_in_stock;
+
+update v_products_in_stock
+set estoque = 0
+where id = 1
+returning id, produto, estoque;
