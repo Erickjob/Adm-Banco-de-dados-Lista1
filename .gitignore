@@ -1,0 +1,23 @@
+# Dependências
+node_modules/
+vendor/
+
+# Arquivos de ambiente e segredos
+.env
+.env.local
+*.log
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
+
+# Pastas de build / compilação
+dist/
+build/
+bin/
+obj/
+
+# Editores de código
+.vscode/
+.idea/
+*.swp
